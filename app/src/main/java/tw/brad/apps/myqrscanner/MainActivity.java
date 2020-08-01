@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity
 
     private void init(){
         mScannerView = new ZXingScannerView(this);
+        mScannerView.setAspectTolerance(0.5f);
         setContentView(mScannerView);
     }
 
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity
     }
     @Override
     public void handleResult(Result rawResult) {
-        Log.v("bradlog", "OK");
+        String result = rawResult.getText();
+        Log.v("bradlog", result);
+        mScannerView.resumeCameraPreview(this);
     }
 }
