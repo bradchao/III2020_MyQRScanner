@@ -8,6 +8,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.zxing.Result;
 
@@ -45,9 +46,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init(){
-        mScannerView = new ZXingScannerView(this);
+        setContentView(R.layout.activity_main);
+        mScannerView = findViewById(R.id.scanner);
         mScannerView.setAspectTolerance(0.5f);
-        setContentView(mScannerView);
     }
 
     @Override
@@ -67,5 +68,8 @@ public class MainActivity extends AppCompatActivity
         String result = rawResult.getText();
         Log.v("bradlog", result);
         mScannerView.resumeCameraPreview(this);
+    }
+
+    public void goAction(View view) {
     }
 }
