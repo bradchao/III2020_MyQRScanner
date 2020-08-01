@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.zxing.Result;
 
@@ -17,6 +20,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 public class MainActivity extends AppCompatActivity
         implements ZXingScannerView.ResultHandler{
     private ZXingScannerView mScannerView;
+    private TextView resultText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +28,14 @@ public class MainActivity extends AppCompatActivity
 
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED){
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.CALL_PHONE) ==
+                        PackageManager.PERMISSION_GRANTED){
             init();
         }else{
             requestPermissions(
-                    new String[] { Manifest.permission.CAMERA },
+                    new String[] { Manifest.permission.CAMERA, Manifest.permission.CALL_PHONE},
                     8);
         }
     }
@@ -47,6 +54,7 @@ public class MainActivity extends AppCompatActivity
 
     private void init(){
         setContentView(R.layout.activity_main);
+        resultText = findViewById(R.id.resultText);
         mScannerView = findViewById(R.id.scanner);
         mScannerView.setAspectTolerance(0.5f);
     }
@@ -67,9 +75,19 @@ public class MainActivity extends AppCompatActivity
     public void handleResult(Result rawResult) {
         String result = rawResult.getText();
         Log.v("bradlog", result);
+        resultText.setText(result);
         mScannerView.resumeCameraPreview(this);
     }
 
     public void goAction(View view) {
+//        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+//                Uri.parse(resultText.getText().toString()));
+//        startActivity(browserIntent);
+
+        Intent dial = new Intent();
+        dial.setAction("android.intent.action.CALL");
+        dial.setData(Uri.parse("tel:" + resultText.getText().toString()));
+        startActivity(dial);
+
     }
 }
